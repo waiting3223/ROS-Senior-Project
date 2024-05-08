@@ -1,0 +1,3 @@
+/home/waiting/Opencv/CMakeFiles/rebuild_cache.dir
+/home/waiting/Opencv/CMakeFiles/videocheck.dir
+/home/waiting/Opencv/CMakeFiles/edit_cache.dir
