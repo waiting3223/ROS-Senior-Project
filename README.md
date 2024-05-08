@@ -1,12 +1,7 @@
-# **灰階圖參數調校GUI介面-藍色轉換成OpenCV之灰階圖的參數調校GUI**
-
-## **圖片呈現**
-
-![藍色貼紙原圖] (Image/Blue%20Sticker%20Original%20Image.png)
-![藍色貼紙灰階圖] (Image/Blue%20Sticker%20Grayscale%20Image.png)
+# **灰階圖參數調校GUI-藍色照片轉換成OpenCV之灰階圖的參數調校GUI**
 
 ## 開發動機
-在使用ROS開發小型無人車畢業專題時，我們發現需要一個 GUI 介面來調校藍色轉換成 OpenCV 灰階圖的參數，以便更有效地知道該設定多少參數。
+在使用ROS開發小型無人車畢業專題時，我們發現需要一個 GUI 介面來調校藍色轉換成 OpenCV 灰階圖的參數，以便更有效地知道該設定參數值。
 
 ## **開發環境**
 
@@ -15,6 +10,12 @@
 * CMake最低版本:2.8
 
 * OpenCV函式庫
+
+## **圖片呈現**
+
+![藍色貼紙原圖](Image/Blue%20Sticker%20Original%20Image.png)
+
+![藍色貼紙灰階圖](Image/Blue%20Sticker%20Grayscale%20Image.png)
 
 ## **備註**
 
