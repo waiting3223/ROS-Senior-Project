@@ -1,0 +1,2 @@
+car_move
+-DCATKIN_DEVEL_PREFIX=/home/waiting/ROS/devel -DCMAKE_INSTALL_PREFIX=/home/waiting/ROS/install -G Unix Makefiles
