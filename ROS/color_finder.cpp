@@ -37,17 +37,38 @@ blue_thing.data=0;
 std_msgs::Int16 car_number;
 car_number.data=0;
 
+///////////////////////////////////////////////////////////////////
+//////////////////////////ROS//////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+int c=0;
+void Blue_staue(const Int16& blue_number)
+{
+	
+	
+	if(blue_number.data==0)
+	{
+		blue_thing.data=0;
+	}
+
+	if(blue_number.data==2&&c==0)
+	{
+		blue_thing.data=1;
+		c++;
+	}
+}
+
 
 ros::NodeHandle n;
 
 ros::Publisher red_thing_object=n.advertise<std_msgs::Int16>("red_staue",1);
 ros::Publisher blue_thing_object=n.advertise<std_msgs::Int16>("blue_staue",1);
 ros::Publisher Car=n.advertise<std_msgs::Int16>("TheMovingCar",1);
+ros::Subscriber blue_number_check=n.subscribe("blue_staue",1,Blue_staue);
 cout<<"尋找藍色中"<<endl;
 
 while(1)
 {
-	
+	spinOnce();
 	cap>>frame1;
 	morphologyEx(frame1,frame2,CV_MOP_OPEN,element);					//腐蝕膨脹運算
 	morphologyEx(frame2,frame3,CV_MOP_CLOSE,element);
@@ -116,12 +137,18 @@ while(1)
 
 
 
-	if(blue_thing.data==1)
+	if(blue_thing.data==1&&c==0)
 	{
 		cvDestroyWindow("blue_finder");
 		blue_thing.data=2;
 		car_number.data=1;
 		Car.publish(car_number);
+	}
+
+	if(blue_thing.data==1&&c==1)
+	{
+		cvDestroyWindow("blue_finder");
+		blue_thing.data=2;
 	}
 
 
