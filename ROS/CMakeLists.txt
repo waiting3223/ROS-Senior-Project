@@ -23,9 +23,9 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(color_finder_0 src/color_finder_0.cpp)
+add_executable(color_finder src/color_finder.cpp)
 
-target_link_libraries(color_finder_0
+target_link_libraries(color_finder
 ${catkin_LIBRARIES}
 ${OpenCV_LIBRARIES}
 )
