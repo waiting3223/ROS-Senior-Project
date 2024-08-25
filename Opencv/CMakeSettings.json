@@ -1,0 +1,29 @@
+{
+  "configurations": [
+    {
+      "name": "WSL-GCC-Debug",
+      "generator": "Unix Makefiles",
+      "configurationType": "Debug",
+      "buildRoot": "${env.LOCALAPPDATA}/CMakeBuild/${workspaceHash}/${name}",
+      "installRoot": "${env.LOCALAPPDATA}/CMakeBuild/${workspaceHash}/${name}/install",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "linux" ],
+      "variables": [
+        {
+          "name": "CMAKE_C_COMPILER",
+          "value": "/usr/bin/gcc"
+        },
+        {
+          "name": "CMAKE_CXX_COMPILER",
+          "value": "/usr/bin/g++"
+        },
+        {
+          "name": "CMAKE_MAKE_PROGRAM",
+          "value": "/usr/bin/make"
+        }
+      ]
+    }
+  ]
+}
