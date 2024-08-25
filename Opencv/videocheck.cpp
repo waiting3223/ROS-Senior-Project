@@ -1,103 +1,75 @@
 #include <opencv2/opencv.hpp>
-#include <iostream>
-#include "ros/ros.h"
-#include "std_msgs/String.h"
-#include <sstream>
+#include <ros/ros.h>
+#include <std_msgs/String.h>
 
 using namespace cv;
 using namespace std;
-using namespace ros;
 
-Mat element=getStructuringElement(MORPH_RECT,Size(15,15));
-	
-Mat frame1;Mat frame2,frame3;         //相機Mat
-Mat Hsv,Blur,GB;                      //RGB2HSV Mat,濾波 Mat
-Mat ing;                              //藍色區域Mat
+Mat element = getStructuringElement(MORPH_RECT, Size(15, 15));
+Mat frame1, frame2, frame3;         // 相機 Mat
+Mat Hsv, Blur, GB;                  // RGB2HSV Mat, 濾波 Mat
+Mat ing;                            // 藍色區域 Mat
 
-int h1=100;int h2=130;                //初始化最小與最大選取藍色範圍
-int s1=90;int s2=255;
-int v1=60;int v2=255;
+int h1 = 100, h2 = 130;             // 初始化最小與最大選取藍色範圍
+int s1 = 90, s2 = 255;
+int v1 = 60, v2 = 255;
 
-char Find[23]={I found the blue thing.}
+char Find[] = "I found the blue thing."; // 修正字串初始化
 
-
-void on_Trackbar(int,void*);          //初始化回呼函數
-
-vector<vector<Point> > contours;      //初始化向量
+vector<vector<Point>> contours;      // 初始化向量
 vector<Vec4i> hierarchy;
 
-                                      //////////
-int main(int argc,char** argv)        /*主函數*/
-{                                     /////////
-VideoCapture cap(0);                  //定義物件與設定相機
-init(argc, argv, "talker");
-NodeHandle n;
-Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
-std_msgs::String msg;
-std::stringstream ss;
+void on_Trackbar(int, void*) {}
 
-	while(1)
-	{
-	cap>>frame1;                                                                           //獲得相機Mat
-	imshow("相機",frame1);
+int main(int argc, char** argv) {
+    ros::init(argc, argv, "videocheck");
+    ros::NodeHandle nh;
+    ros::Rate loop_rate(10);
 
-	morphologyEx(frame1,frame2,CV_MOP_OPEN,element);						//腐蝕膨脹運算
-	morphologyEx(frame2,frame3,CV_MOP_CLOSE,element);
-	
+    VideoCapture cap(0);
+    if (!cap.isOpened()) {
+        cout << "Error opening video stream" << endl;
+        return -1;
+    }
 
-	GaussianBlur(frame3,GB,Size(15,15),0,0);                                                        //濾波
-	blur(GB,Blur,Size(15,15));
-	cvtColor(GB,Hsv,CV_BGR2HSV);                                                                 //轉色彩空間
-	
-	cvNamedWindow(" ",1);                                                                        //建立名為" "的視窗
-	createTrackbar("最小彩度"," ",&h1,255,on_Trackbar);                                          //建立各個滑軌條
-	createTrackbar("最小飽和度"," ",&s1,255,on_Trackbar);
-	createTrackbar("最小亮度"," ",&v1,255,on_Trackbar);
-	createTrackbar("最大彩度"," ",&h2,255,on_Trackbar);
-	createTrackbar("最大飽和度"," ",&s2,255,on_Trackbar);
-	createTrackbar("最大亮度"," ",&v2,255,on_Trackbar);
-	inRange(Hsv,Scalar(h1,s1,v1),Scalar(h2,s2,v2),ing);                                          //選取藍色範圍
-	imshow(" ",ing);
-	
-	findContours(ing,contours,hierarchy,CV_RETR_EXTERNAL,CV_CHAIN_APPROX_NONE);                  //計算面積
-	for ( unsigned int i = 0;  i < contours.size();  i++)
-	{
-	if(contourArea(contours[i])>50000)
-	{
-	cout<< " i= "<<i<<endl;
-	cout << " Area: " << contourArea(contours[i]) << endl;
-	ss<<Find;
-	msg.data = ss.str();
-	ROS_INFO("%s", msg.data.c_str());
-	chatter_pub.publish(msg);
-	ros::spinOnce();
-	loop_rate.sleep();
-	}
-	
-	}
-	if(waitKey(100)==27){break;}                                                                  //按Esc離開
+    namedWindow(" ", WINDOW_AUTOSIZE); // 使用 OpenCV 的 namedWindow
 
-	
-	}
-return 0;
+    createTrackbar("min_hue", " ", &h1, 255, on_Trackbar);
+    createTrackbar("min_saturation", " ", &s1, 255, on_Trackbar);
+    createTrackbar("min_value", " ", &v1, 255, on_Trackbar);
+    createTrackbar("max_hue", " ", &h2, 255, on_Trackbar);
+    createTrackbar("max_saturation", " ", &s2, 255, on_Trackbar);
+    createTrackbar("max_value", " ", &v2, 255, on_Trackbar);
+
+    while (ros::ok()) {
+        cap >> frame1;
+        if (frame1.empty()) break;
+
+        morphologyEx(frame1, frame2, MORPH_OPEN, element); // 使用 OpenCV 的 MORPH_OPEN
+        morphologyEx(frame2, frame3, MORPH_CLOSE, element); // 使用 OpenCV 的 MORPH_CLOSE
+
+        GaussianBlur(frame3, GB, Size(15, 15), 0); // 修正 GaussianBlur 參數
+        cvtColor(GB, Hsv, COLOR_BGR2HSV); // 使用 OpenCV 的 COLOR_BGR2HSV
+
+        inRange(Hsv, Scalar(h1, s1, v1), Scalar(h2, s2, v2), ing);
+
+        findContours(ing, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE); // 使用 OpenCV 的 RETR_EXTERNAL 和 CHAIN_APPROX_NONE
+
+        for (size_t i = 0; i < contours.size(); i++) {
+            if (contourArea(contours[i]) > 500) {
+                putText(frame1, Find, Point(50, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 2);
+            }
+        }
+
+        imshow(" ", frame1);
+
+        if (waitKey(100) == 27) break; // ESC 鍵退出
+
+        loop_rate.sleep();
+    }
+
+    cap.release();
+    destroyAllWindows();
+
+    return 0;
 }
-
-
-                                                                                      ////////////
-void on_Trackbar(int,void*)                                                           /*回呼函數*/                                                   
-{                                                                                     ////////////
-if(h1<h2&&s1<s2&&v1<v2)
-{
-h1=getTrackbarPos("最小彩度"," ");                                                                   //讀取各個滑軌條數值
-s1=getTrackbarPos("最小飽和度"," ");
-v1=getTrackbarPos("最小亮度"," ");
-h2=getTrackbarPos("最大彩度"," ");
-s2=getTrackbarPos("最大飽和度"," ");
-v2=getTrackbarPos("最大亮度"," ");
-
-}
-
-
-}
-
-
