@@ -5,9 +5,11 @@
 
 ## **開發環境**
 
-* 作業系統環境:Ubuntu 18.04
+* 作業系統環境 : Ubuntu 20.04
 
-* CMake最低版本:2.8
+* CMake版本 : 3.29.5-msvc4
+
+* ROS : Noetic Version*
 
 * OpenCV函式庫
 
@@ -23,6 +25,11 @@
 
 * 此Git存放庫是在畢業專題後建立，故無相關過往紀錄可供查詢
 
-* 請安裝OpenCV函式庫 ,並確保 CMake 能夠找到 OpenCV 函式庫。可在 CMakeLists.txt 文件中使用 ```find_package(OpenCV REQUIRED)``` 指令來確定 CMake 能夠找到 OpenCV。
+* 本專案使用CMake進行編譯，請使用```cmake .```指令進行編譯
 
-* videocheck已經是編譯完成的可執行文件(使用CMake編譯)
+* 請安裝OpenCV函式庫 ,並確保 CMake 能夠找到 OpenCV 函式庫。可在 CMakeLists.txt 文件中使用 ```find_package(OpenCV REQUIRED)``` 指令來確認 CMake 能否找到 OpenCV。
+  若無法找到，請手動配置OpenCV路徑
+
+* 本專案使用ROS,請使用ROS的Noetic版本*
+
+* videocheck未完成,無法使用CMake編譯
