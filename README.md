@@ -1,6 +1,5 @@
 # **灰階圖參數調校GUI-藍色照片轉換成OpenCV之灰階圖的參數調校GUI**
 
-# 本專案升級內容 已轉移至 https://github.com/waiting3223/ROS2_Update---By-Old-ROS-Project.git 儲存褲
 ## **開發動機**
 在使用ROS開發小型無人車畢業專題時，我們發現需要一個 GUI 介面來調校藍色轉換成 OpenCV 灰階圖的參數，以便更有效地知道該設定參數值。
 
